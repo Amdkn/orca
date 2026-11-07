@@ -59,6 +59,7 @@ export function createRuntimeFileHost(options?: {
     const connectionId = store.getRepo(worktree.repoId)?.connectionId
     return normalizeExecutionHostId(options?.hostId) ?? getConnectionExecutionHostId(connectionId)
   }
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: File subjects read only these supplied host/store capabilities.
   const host = {
     getRuntimeId: () => 'runtime-1',
     requireStore: () => store,
@@ -78,7 +79,6 @@ export function createRuntimeFileHost(options?: {
     resolveRuntimeGitTarget: options?.resolveRuntimeGitTarget ?? vi.fn(),
     openFile: options?.openFile ?? vi.fn(),
     ...(options?.openDiff ? { openDiff: options.openDiff } : {})
-    // SAFETY: Existing file subjects read only the explicitly mocked host/store capabilities.
   } as unknown as RuntimeFileCommandHost
   return { host, store }
 }

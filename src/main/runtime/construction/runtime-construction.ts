@@ -20,8 +20,6 @@ import type { StatsCollector } from '../../stats/collector'
 
 import type { PrepareClaudeAuth } from '../../ipc/pty/host-env/types'
 
-import type { AgentStatusIpcPayload } from '../../../shared/agent-status/contracts/agent-status-ipc-payload'
-
 import {
   type RuntimeFileCommandSurface,
   installRuntimeFileCommandSurface
@@ -118,7 +116,7 @@ export abstract class OrcaRuntimeWithStateFields extends OrcaRuntimeWithLinearCo
   readonly workspaceSleepPlatform: WorkspaceSleepPlatform | null
 
   protected readonly getAgentStatusSnapshotForPaneFn:
-    | ((paneKey: string) => AgentStatusIpcPayload[])
+    | RuntimeConstructionBindings['getAgentStatusSnapshotForPane']
     | null
 
   /** The agent's full final reply for that finished lead turn; status rows carry only a capped preview. */

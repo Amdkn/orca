@@ -1,9 +1,9 @@
-import { createTerminalArtifactSubjects } from './orca-runtime-files-terminal-artifact-fixtures'
 import { describe, expect, it, vi } from 'vitest'
 import { realpath } from 'node:fs/promises'
 
 import { useRuntimeFileHostLifecycle } from '../../files/runtime-file-host.test-fixture'
 import {
+  createTerminalArtifactSubjects,
   absoluteFileTarget,
   useTerminalArtifactTempFiles
 } from './orca-runtime-files-terminal-artifact-fixtures'

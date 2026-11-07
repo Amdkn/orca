@@ -3,8 +3,10 @@ import '../../../shared/structured-worker-handle'
 import '../../../shared/workspace-layout/stable-pane-id'
 import '../../../shared/worker-terminal-host-scope'
 import 'zod'
-import { structuredAgentSessionPaneKey } from '../../../shared/agent-session/view/structured-agent-session-projection'
-import { structuredAgentSessionTabId } from '../../../shared/agent-session/view/structured-agent-session-projection'
+import {
+  structuredAgentSessionPaneKey,
+  structuredAgentSessionTabId
+} from '../../../shared/agent-session/view/structured-agent-session-projection'
 import type { AgentSessionRecordReader } from '../orchestration/addressing/session-lineage/structured-session-lineage'
 import { createCanonicalSessionResolver } from '../orchestration/addressing/session-lineage/structured-session-lineage'
 import { LOCAL_EXECUTION_HOST_ID } from '../../../shared/execution-host'
