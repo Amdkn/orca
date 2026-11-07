@@ -46,7 +46,7 @@ vi.mock(
     isNativeChatTranscriptLocalReadable: () => true
   })
 )
-vi.mock('@/runtime/web-runtime-session-environment', () => ({
+vi.mock('@/runtime/web-session-tabs-sync/identity/web-runtime-session-environment', () => ({
   isWebRuntimeSessionActive: mockIsWebRuntimeSessionActive
 }))
 vi.mock('@/lib/workspace/ownership/worktree-runtime-owner', () => ({
@@ -77,7 +77,7 @@ vi.mock('@/lib/agent-ready-wait', () => ({
   waitForAgentReady: vi.fn(async () => ({ ready: true, reason: 'foreground-match' }))
 }))
 // Mock structured execution while retaining real route selection; callers must still reach the correct surface.
-vi.mock('@/runtime/structured-agent-session-client', () => ({
+vi.mock('../../../../runtime/native-chat/requests/structured-agent-session-call', () => ({
   callStructuredAgentSession: (_target: unknown, method: string) =>
     method === 'agentSession.createSupport' ? mockCreateSupport() : new Promise(() => undefined)
 }))
