@@ -1,12 +1,12 @@
-import { describe, expect, it, vi } from 'vitest'
-import { realpath } from 'node:fs/promises'
-
-import { useRuntimeFileHostLifecycle } from '../../files/runtime-file-host.test-fixture'
 import {
   createTerminalArtifactSubjects,
   absoluteFileTarget,
   useTerminalArtifactTempFiles
 } from './orca-runtime-files-terminal-artifact-fixtures'
+import { describe, expect, it, vi } from 'vitest'
+import { realpath } from 'node:fs/promises'
+
+import { useRuntimeFileHostLifecycle } from '../../files/runtime-file-host.test-fixture'
 
 vi.mock('fs', async () =>
   (await import('../../files/runtime-file-command-mock-registry')).fsModuleMock()
