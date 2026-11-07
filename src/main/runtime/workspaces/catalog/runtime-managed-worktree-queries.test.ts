@@ -35,7 +35,7 @@ vi.mock(
 )
 
 import { RuntimeManagedWorktreeQueries } from './runtime-managed-worktree-queries'
-import type { RuntimeStore } from '../../runtime-store-contract'
+import type { RuntimeStore } from '../../construction/runtime-store-contract'
 import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
 import { getRepoHostIdentityForParts } from '../../../../shared/repo-host-identity'
 import {

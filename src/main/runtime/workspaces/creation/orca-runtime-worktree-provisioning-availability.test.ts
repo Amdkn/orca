@@ -15,7 +15,7 @@ import { store } from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
 import { createMobileCreateTestNotifier } from '../../orca-runtime-tests/orca-runtime-test-scenario-builders.spec'
 import { tmpdir } from 'node:os'
 import type { Worktree } from '../../../../shared/worktree/types'
-import type { RuntimePtyController } from '../../runtime-pty-controller-contract'
+import type { RuntimePtyController } from '../../terminal/lifecycle/runtime-pty-controller-contract'
 
 describe('host worktree creation while its renderer is unavailable', () => {
   it.each([

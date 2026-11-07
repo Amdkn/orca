@@ -10,7 +10,7 @@ import {
   expectStablePaneKeyEnv,
   store
 } from './orca-runtime-test-fixtures.spec'
-import { spawnedPtyEnv } from '../spawned-pty-env-fixtures'
+import { spawnedPtyEnv } from '../terminal/launch/spawned-pty-env-fixtures'
 
 describe('OSC 7501 program status', () => {
   it('projects split reports from a rendererless PTY into hook-yielding status events', async () => {

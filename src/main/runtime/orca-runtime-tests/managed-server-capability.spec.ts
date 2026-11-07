@@ -3,7 +3,7 @@ import { createRuntime } from './orca-runtime-test-fixtures.spec'
 import {
   registerManagedServerActions,
   type ManagedServerActions
-} from '../managed-server-actions-registry'
+} from '../hosts/management/managed-server-actions-registry'
 
 describe('managed server capability', () => {
   // Without desktop SSH registry, never advertise methods that can only refuse.

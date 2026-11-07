@@ -1,5 +1,5 @@
 import { withDurableRuntimeStore } from './runtime-durable-store-fixture'
-import type { PtyControllerInventory } from '../runtime-pty-controller-contract'
+import type { PtyControllerInventory } from '../terminal/lifecycle/runtime-pty-controller-contract'
 import { describe, expect, it, vi } from 'vitest'
 import './runtime-test-module-registration.spec'
 import { OrcaRuntimeService } from '../orca-runtime'

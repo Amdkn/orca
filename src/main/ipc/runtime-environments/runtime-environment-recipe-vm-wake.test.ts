@@ -8,7 +8,7 @@ import { encodePairingOffer } from '../../../shared/remote-runtime/pairing/pairi
 import { PAIRING_OFFER_VERSION } from '../../../shared/remote-runtime/pairing/mobile-relay-pairing-offer'
 import { upsertEphemeralVmRuntime } from '../../../shared/ephemeral-vm-runtime-store'
 import type { EphemeralVmRuntimeStatus } from '../../../shared/ephemeral-vm-runtimes'
-import { registerRecipeVmWaker } from '../../runtime/recipe-vm-waker-registry'
+import { registerRecipeVmWaker } from '../../runtime/workspaces/sleep/recipe-vm-waker-registry'
 import type {
   RecipeVmOpening,
   RecipeVmState

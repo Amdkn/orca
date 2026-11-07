@@ -20,7 +20,7 @@ import {
   projectTerminalVisibleLines
 } from '../view/orca-runtime-terminal-projection'
 import { VISIBLE_TERMINAL_SNAPSHOT_TIMEOUT_MS } from './provider-snapshot-budget'
-import { isNativeWindowsConptyPty } from '../../terminal-model-query-authority'
+import { isNativeWindowsConptyPty } from './terminal-model-query-authority'
 
 export abstract class OrcaRuntimeWithCaptureProviderTerminalBuffer extends OrcaRuntimeWithSerializeTerminalBufferFromAvailableState {
   protected abstract readVisibleTerminalState(

@@ -16,7 +16,7 @@ import {
 } from './orca-runtime-test-fixtures.spec'
 import { createWorktreeRemovalRuntime } from './orca-runtime-test-scenario-builders.spec'
 import type { ExecutionHostId } from '../../../shared/execution-host'
-import type { RuntimeStore } from '../runtime-store-contract'
+import type { RuntimeStore } from '../construction/runtime-store-contract'
 import type { WorktreeRemovalRecord } from '../../workspaces/removal/worktree-removal-records'
 import {
   failedWorktreeRemovals,

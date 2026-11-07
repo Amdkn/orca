@@ -23,7 +23,7 @@ import {
   withChatTabChanges,
   type ChatTabChange
 } from '../agent-session/agent-session-tab-layout'
-import { createChatTabLayoutQueue } from '../agent-session-tab-layout-queue'
+import { createChatTabLayoutQueue } from '../agent-session/agent-session-tab-layout-queue'
 import type * as LayoutCommands from '../terminal/layout/runtime-layout-apply'
 import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import type { LayoutApplyReply } from '../../../shared/workspace-layout/workspace-layout-command-types'

@@ -16,7 +16,7 @@ import {
   RUNTIME_ENVIRONMENT_WAKING_MESSAGE,
   type RecipeVmWakeIntent
 } from '../../../shared/remote-runtime/recipe-vm-wake'
-import { getRecipeVmWaker } from '../../runtime/recipe-vm-waker-registry'
+import { getRecipeVmWaker } from '../../runtime/workspaces/sleep/recipe-vm-waker-registry'
 import { recipeVmWakePairing } from '../../ephemeral-vm/recipe-vm-wake-pairings'
 import {
   isRuntimeEnvironmentManuallyDisconnected,

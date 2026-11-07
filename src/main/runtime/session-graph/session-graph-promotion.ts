@@ -3,7 +3,6 @@ import type { OrcaRuntimeWithHasTerminalsForWorktree as HasTerminalsForWorktreeM
 import type { OrcaRuntimeWithBindPtyIncarnationHandle as BindPtyIncarnationHandleMethods } from '../terminal/identity/terminal-handle-bindings'
 import type { OrcaRuntimeWithCollectMobileVisibleGraphChangedWorktrees as CollectMobileVisibleGraphChangedWorktreesMethods } from '../session-tabs/session-tabs-inventory'
 import type { OrcaRuntimeWithGetPtyRecordForPaneKey as GetPtyRecordForPaneKeyMethods } from '../orchestration/mailbox/routing/terminal-pane-mail-routing'
-import type { OrcaRuntimeWithResolveWaiter as ResolveWaiterMethods } from '../orca-runtime-resolve-waiter'
 import type { OrcaRuntimeWithMarkPtyLivenessUnverifiable as MarkPtyLivenessUnverifiableMethods } from '../terminal/layout/terminal-input-floor'
 import type { OrcaRuntimeWithRecordPtyWorktree as RecordPtyWorktreeMethods } from '../terminal/identity/pty-worktree-record'
 import type { RuntimeSessionTabsInventoryPublication as SessionTabsInventoryPublicationMethods } from '../session-tabs/session-tabs-inventory-publication'
@@ -90,10 +89,6 @@ export abstract class OrcaRuntimeWithAttachWindow extends OrcaRuntimeWithNotifyS
   protected abstract deliverPendingMessagesForPty(
     ...args: Parameters<ResolveExitWaitersMethods['deliverPendingMessagesForPty']>
   ): ReturnType<ResolveExitWaitersMethods['deliverPendingMessagesForPty']>
-
-  protected abstract getLeafKey(
-    ...args: Parameters<ResolveWaiterMethods['getLeafKey']>
-  ): ReturnType<ResolveWaiterMethods['getLeafKey']>
 
   abstract getPtyLivenessVerdict(
     ...args: Parameters<MarkPtyLivenessUnverifiableMethods['getPtyLivenessVerdict']>

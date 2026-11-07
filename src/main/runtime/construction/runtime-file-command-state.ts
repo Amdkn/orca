@@ -4,7 +4,7 @@ import type { LocalProjectGhExecOptions } from '../../workspaces/execution-host/
 import type { RuntimeTerminalAgentStatus } from '../../../shared/runtime-terminal-contracts'
 import { OrcaRuntimeWithPreservedBranchCleanup } from './runtime-host-services'
 import { RuntimeFileCommands } from '../orca-runtime-files'
-import { createRuntimeFileWatcherRemoval } from '../runtime-file-watcher-removal'
+import { createRuntimeFileWatcherRemoval } from '../workspaces/removal/runtime-file-watcher-removal'
 import { RuntimeGitCommands } from '../integrations/git/orca-runtime-git'
 import { RuntimeHostedReviewCommands } from '../integrations/reviews/runtime-hosted-review-commands'
 import { RuntimeGitHubRepositoryQueryCommands } from '../integrations/github/runtime-github-repository-query-commands'
@@ -25,7 +25,7 @@ import {
   resolveChatScratchSelectorFolder
 } from '../files/chat-scratch-file-root'
 
-import type { RuntimeStore } from '../runtime-store-contract'
+import type { RuntimeStore } from './runtime-store-contract'
 import type { ResolvedWorktree } from '../workspaces/catalog/runtime-worktree-path-identity'
 import type { Repo } from '../../../shared/repo-types'
 import { isWslMoveWorktreeBlocked } from '../../persistence/moving-wsl-projects/wsl-move-background-backoff'

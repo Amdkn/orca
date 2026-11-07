@@ -1,7 +1,7 @@
 import type { TerminalCreateOptions } from './terminal-create-options'
 import type { RuntimeTerminalCreate } from '../../../../shared/runtime-terminal-create-contract'
 import { createTerminalRevealWarning, ownerSurfacing } from './terminal-presentation'
-import type { RuntimeNotifier } from '../../runtime-notifier-contract'
+import type { RuntimeNotifier } from '../../client/events/runtime-notifier-contract'
 import type { TerminalWorkspaceLaunchScope } from '../../orchestration/terminal-authority/structured-sessions/runtime-legacy-worker-terminal-recovery-types'
 import type { RuntimeTerminalPresentation } from '../../../../shared/runtime-types'
 

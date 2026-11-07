@@ -1,7 +1,7 @@
 import { captureMainTerminalPaneLookup, findMainTerminalPane } from './pty-pane-query'
 // Publish main-owned workspace panes from Store layout changes, even without a window graph.
 
-import type { PaneStartFactOf } from '../../pane-start-statuses'
+import type { PaneStartFactOf } from './pane-start-statuses'
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { MainPaneBinding } from './main-pane-verdict'
@@ -10,8 +10,8 @@ import type { RuntimeSyncWindowGraph } from '../../../../shared/runtime-types'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../../shared/runtime-session-contracts'
 import { withMainSessionTabRows } from '../../session-tabs/main-session-tab-rows'
 import { withMainTabOrder } from '../../session-tabs/main-session-tab-order'
-import { headlessMobileSnapshotContentUnchanged } from '../../mobile-session-snapshot-equality'
-import type { RuntimeStore } from '../../runtime-store-contract'
+import { headlessMobileSnapshotContentUnchanged } from '../../session-tabs/mobile-session-snapshot-equality'
+import type { RuntimeStore } from '../../construction/runtime-store-contract'
 import type { WorkspaceLayoutReads } from './workspace-layout-stream'
 import {
   composeMainTerminalSurfaces,

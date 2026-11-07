@@ -27,7 +27,7 @@ import { structuredWorkerHandleAgentStatus } from '../../orchestration/addressin
 import {
   retitleStructuredConversationTab,
   titleStructuredConversationTabs
-} from '../../structured-conversation-tab-title'
+} from '../../session-tabs/structured-conversation-tab-title'
 import { structuredChatDisplayName } from '../../../../shared/structured-chat-row-name'
 
 export abstract class OrcaRuntimeWithPruneMobileSessionTabGroupLayout extends OrcaRuntimeWithScheduleMobileSessionTabsChanged {

@@ -23,7 +23,7 @@ import { getHeadlessMobileSessionGroupId } from '../terminal/surface/mobile-sess
 import {
   appendBrowserTabOrder,
   collectBrowserGroupAssignment
-} from '../mobile-session-browser-group-projection'
+} from '../session-lifecycle/projection/mobile-session-browser-group-projection'
 
 export abstract class OrcaRuntimeWithMergePreservedHeadlessMobileSessionTabs extends OrcaRuntimeWithSyncMobileSessionTabs {
   protected abstract collectPreservedHeadlessMobileSessionTabs(

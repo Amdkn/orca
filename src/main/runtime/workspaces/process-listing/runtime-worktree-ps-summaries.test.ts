@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildRuntimeWorktreePsSummaries } from './runtime-worktree-ps-summaries'
 import type { ResolvedWorktree } from '../catalog/runtime-worktree-path-identity'
-import type { RuntimeStore } from '../../runtime-store-contract'
+import type { RuntimeStore } from '../../construction/runtime-store-contract'
 
 describe('buildRuntimeWorktreePsSummaries', () => {
   it('preserves persisted host ownership over the resolved row fallback', () => {

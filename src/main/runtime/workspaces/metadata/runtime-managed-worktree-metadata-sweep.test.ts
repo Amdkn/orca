@@ -8,7 +8,7 @@ import type { Repo } from '../../../../shared/repo-types'
 import { testState, createStore, makeRepo } from '../../../persistence/persistence-test-harness'
 import type { Store } from '../../../persistence/loading-store/store'
 import { RuntimeManagedWorktreeQueries } from '../catalog/runtime-managed-worktree-queries'
-import type { RuntimeStore } from '../../runtime-store-contract'
+import type { RuntimeStore } from '../../construction/runtime-store-contract'
 import { hostWorktreeTarget } from '../../../../shared/worktree/host-qualified-identity'
 
 vi.mock('./ssh/ssh-config-parser', () => ({

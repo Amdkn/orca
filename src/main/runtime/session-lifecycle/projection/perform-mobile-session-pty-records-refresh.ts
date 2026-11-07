@@ -4,7 +4,7 @@ import type { OrcaRuntimeWithAgentSessionResumeOwnership as AgentSessionResume }
 import type { OrcaRuntimeWithStopTerminalsForWorktree as WorktreeTerminalStop } from '../../terminal/stop/worktree-terminal-stop'
 import { OrcaRuntimeWithRestoredPaneStart } from './restored-pane-materialize'
 import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
-import type { PtyControllerInventory } from '../../runtime-pty-controller-contract'
+import type { PtyControllerInventory } from '../../terminal/lifecycle/runtime-pty-controller-contract'
 import { isAgentLaunchRunningIn } from '../../../agent-launch/agent-launch-pane-attachment'
 import { FLOATING_TERMINAL_WORKTREE_ID } from '../../../../shared/constants'
 import type { RuntimeNavigationTarget } from '../../../../shared/runtime-navigation'
@@ -23,7 +23,7 @@ import { isAutomaticTabActivation } from '../../../../shared/tab-activation-inte
 import { isWorktreeTerminalsSleepingError } from '../../../../shared/workspace-sleep'
 
 import { paneHoldsSession } from '../../terminal/surface/main-terminal-surfaces'
-import { recordShownTerminalUserOpen } from '../../run-terminal-client-use'
+import { recordShownTerminalUserOpen } from '../../terminal/lifecycle/run-terminal-client-use'
 import { resolveChatTabActivation } from '../../agent-session/agent-session-tab-identity'
 export abstract class OrcaRuntimeWithPerformMobileSessionPtyRecordsRefresh extends OrcaRuntimeWithRestoredPaneStart {
   protected abstract toMobileSessionTabsResult(

@@ -13,7 +13,7 @@ import type {
   RuntimeTerminalOrphanAdoptionResult
 } from '../../../../shared/runtime-types'
 import type { TerminalWorkspaceLaunchScope } from '../../orchestration/terminal-authority/structured-sessions/runtime-legacy-worker-terminal-recovery-types'
-import type { PtyControllerInventory } from '../../runtime-pty-controller-contract'
+import type { PtyControllerInventory } from '../lifecycle/runtime-pty-controller-contract'
 import { resolveTerminalSessionWorktreeId } from '../../workspaces/catalog/runtime-worktree-path-identity'
 import { getLocalProjectWorktreeGitOptions } from '../../../workspaces/execution-host/project-runtime-git-options'
 import { adoptRuntimeTerminalOrphansFromInventory } from './runtime-terminal-orphan-adoption'

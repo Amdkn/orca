@@ -8,12 +8,12 @@ import type { OrcaRuntimeWithRuntimeId as IdentityState } from './runtime-identi
 import type { OrcaRuntimeWithStopRequestedPtyIds as ServiceState } from './runtime-service-state'
 import type { OrcaRuntimeWithPreservedBranchCleanup as HostServices } from './runtime-host-services'
 
-import type { RuntimeEdgeCommandSurface } from '../runtime-edge-command-controller'
+import type { RuntimeEdgeCommandSurface } from './runtime-edge-command-controller'
 import type { OrcaRuntimeWithListManagedWorktrees as ListManagedWorktrees } from '../workspaces/managed-workspace-operations'
 import type { ProjectExecutionRuntimeResolution } from '../../../shared/project-execution-runtime'
 import { OrcaRuntimeWithLinearCommands } from '../integrations/linear/linear-commands'
 
-import type { RuntimeStore } from '../runtime-store-contract'
+import type { RuntimeStore } from './runtime-store-contract'
 import { installGitHubProjectAccounts } from '../../github/github-project-account'
 import type { WorkspaceSleepPlatform } from '../workspaces/sleep/workspace-sleep-platform'
 import type { StatsCollector } from '../../stats/collector'
@@ -25,7 +25,7 @@ import type { AgentStatusIpcPayload } from '../../../shared/agent-status/contrac
 import {
   type RuntimeFileCommandSurface,
   installRuntimeFileCommandSurface
-} from '../runtime-file-command-surface'
+} from './runtime-file-command-surface'
 import {
   type RuntimeGitCommandSurface,
   installRuntimeGitCommandSurface
@@ -37,11 +37,11 @@ import {
 import {
   type RuntimeReviewCommandSurface,
   installRuntimeReviewCommandSurface
-} from '../runtime-review-command-surface'
+} from './runtime-review-command-surface'
 import {
   type RuntimeServiceCommandSurface,
   installRuntimeServiceCommandSurface
-} from '../runtime-service-command-surface'
+} from './runtime-service-command-surface'
 import { RuntimeSkillCommands } from '../integrations/skill/runtime-skill-command-surface'
 import {
   type RuntimeSkillCommandSurface,
@@ -49,13 +49,13 @@ import {
 } from '../integrations/skill/runtime-skill-command-contract'
 import { getAppEnvironment } from '../../../shared/app-environment'
 import { RuntimeClientSettingsController } from '../client/settings/runtime-client-settings'
-import { RuntimeSessionSearchSettingsController } from '../runtime-session-search-settings'
-import { RuntimeAutomationController } from '../runtime-automation-controller'
-import { RuntimeOrchestrationFederation } from '../runtime-orchestration-federation'
+import { RuntimeSessionSearchSettingsController } from '../integrations/ai-vault/runtime-session-search-settings'
+import { RuntimeAutomationController } from '../integrations/automations/runtime-automation-controller'
+import { RuntimeOrchestrationFederation } from '../orchestration/federation/runtime-orchestration-federation'
 import { configureAiVaultSessionSources } from '../../ai-vault/cached-session-list'
 import { configureHostReadableTranscriptPathSources } from '../../native-chat/host-readable-transcript-path'
 import { createEphemeralAgentSessionClaimSigner } from '../agent-session/ownership/agent-session-claim-identity'
-import { registerConptyDa1OverrideInstaller } from '../terminal-model-query-authority'
+import { registerConptyDa1OverrideInstaller } from '../terminal/output/terminal-model-query-authority'
 import { registerTerminalViewAttributesApplier } from '../terminal/view/terminal-view-attribute-store'
 import { RuntimeMachineName } from '../hosts/platform-probe/runtime-machine-name'
 import { setPRConflictSummaryRemoteFetches } from '../../github/conflict-summary'

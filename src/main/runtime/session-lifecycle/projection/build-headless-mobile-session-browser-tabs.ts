@@ -22,7 +22,7 @@ import type {
   TerminalSurfaceCloseTarget
 } from '../../../../shared/workspace-layout/terminal-surface-close-target'
 import { retireTerminalSurfacesFromSnapshot } from '../../terminal/surface/mobile-session-terminal-retirement'
-import type { PtyControllerInventory } from '../../runtime-pty-controller-contract'
+import type { PtyControllerInventory } from '../../terminal/lifecycle/runtime-pty-controller-contract'
 import { FLOATING_TERMINAL_WORKTREE_ID } from '../../../../shared/constants'
 import { captureAcknowledgedTerminalTabRetirement } from '../../terminal/surface/workspace-session-terminal-tab-retirement-identity'
 import { closeLeafOrTab } from '../../../persistence/terminal-topology/terminal-topology-commit'

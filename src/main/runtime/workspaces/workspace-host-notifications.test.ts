@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Repo } from '../../../shared/repo-types'
 import type { RuntimeClientEvent } from '../../../shared/runtime-client-events'
 import { OrcaRuntimeService } from '../orca-runtime'
-import type { RuntimeStore } from '../runtime-store-contract'
+import type { RuntimeStore } from '../construction/runtime-store-contract'
 import { partialRuntimeStore } from '../orca-runtime-tests/runtime-store-partial-fixture'
 
 function catalogEventsFor(repo: Repo): RuntimeClientEvent[] {

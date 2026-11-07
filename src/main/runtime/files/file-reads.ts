@@ -1,6 +1,6 @@
 import { open, stat } from 'node:fs/promises'
 import { extname } from 'node:path'
-import type { RuntimeStore } from '../runtime-store-contract'
+import type { RuntimeStore } from '../construction/runtime-store-contract'
 import type { RuntimeFileCommandHost } from './file-command-host'
 import type {
   RuntimeFileReadResult,

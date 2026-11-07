@@ -14,7 +14,7 @@ import {
   activateClientSessionTabSelection,
   deriveClientSessionTabSelection,
   projectClientSessionTabSelection
-} from '../../client-session-tab-selection-projection'
+} from '../../client/navigation/client-session-tab-selection-projection'
 import {
   buildHeadlessMobileSessionTabGroups,
   cloneTerminalLayoutSnapshot

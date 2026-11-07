@@ -8,7 +8,7 @@ import {
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
 } from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
-import type { RuntimeNotifier } from '../../runtime-notifier-contract'
+import type { RuntimeNotifier } from '../../client/events/runtime-notifier-contract'
 
 // After a restart, a reconnecting client restarts each saved tab's terminal. The mobile row for
 // that tab must carry the tab's saved name, not only the new terminal's own title.

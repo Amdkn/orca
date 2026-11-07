@@ -4,7 +4,7 @@ import type { RetiredTerminalSurface } from '../terminal/surface/mobile-session-
 import type { RuntimeMobileSessionRetiredTerminalSurface } from '../../../shared/runtime-types'
 import { LOCAL_EXECUTION_HOST_ID, parseExecutionHostId } from '../../../shared/execution-host'
 import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
-import { keepsExitedPane } from '../exited-split-pane-layout-close'
+import { keepsExitedPane } from '../terminal/lifecycle/exited-split-pane-layout-close'
 import type { ExitedSplitPaneFacts } from '../terminal/lifecycle/exited-split-pane-rule'
 import {
   forgetClosedPaneOfExit,

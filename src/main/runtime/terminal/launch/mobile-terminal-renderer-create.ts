@@ -5,7 +5,7 @@ import type { TerminalWorkspaceLaunchScope } from '../../orchestration/terminal-
 import { OrcaRuntimeWithMobileChatForkCreate } from './mobile-terminal-chat-fork-create'
 import type { RuntimeMobileSessionCreateTerminalResult } from '../../../../shared/runtime-types'
 import { randomUUID } from 'node:crypto'
-import { getRuntimeDesktopSurface } from '../../runtime-desktop-surface'
+import { getRuntimeDesktopSurface } from '../../construction/runtime-desktop-surface'
 import type { IpcMainEvent } from 'electron'
 import {
   MOBILE_TERMINAL_READY_FALLBACK_MS,

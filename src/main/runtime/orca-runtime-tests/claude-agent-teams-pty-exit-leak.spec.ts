@@ -1,7 +1,7 @@
 /** Natural PTY exit/disconnect must evict leader teams too; explicit close was once the only cleanup. */
 import { describe, it, expect } from 'vitest'
 import { OrcaRuntimeService } from '../orca-runtime'
-import type { ClaudeAgentTeamsService } from '../claude-agent-teams-service'
+import type { ClaudeAgentTeamsService } from '../terminal/agent-teams/claude-agent-teams-service'
 
 export function registerClaudeAgentTeamsPtyExitLeakTests(): void {
   type RuntimeInternals = {
