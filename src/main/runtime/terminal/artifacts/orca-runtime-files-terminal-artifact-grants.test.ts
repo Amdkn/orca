@@ -1,10 +1,8 @@
+import { createTerminalArtifactSubjects } from './orca-runtime-files-terminal-artifact-fixtures'
 import { describe, expect, it, vi } from 'vitest'
 import { realpath } from 'node:fs/promises'
 
-import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from '../../files/orca-runtime-files-test-harness'
+import { useRuntimeFileHostLifecycle } from '../../files/runtime-file-host.test-fixture'
 import {
   absoluteFileTarget,
   useTerminalArtifactTempFiles
@@ -32,8 +30,8 @@ vi.mock(
     (await import('../../files/runtime-file-command-mock-registry')).localWorktreeRuntimeOptionsMock
 )
 
-describe('RuntimeFileCommands', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeTerminalArtifacts', () => {
+  useRuntimeFileHostLifecycle()
 
   describe('resolveTerminalPath', () => {
     const { tempFile } = useTerminalArtifactTempFiles()
@@ -41,9 +39,9 @@ describe('RuntimeFileCommands', () => {
     // Why: a chat link or typed path carries no terminal; the caller's terminal access is the authority.
     it('grants a writable file outside every workspace with no terminal or chat context', async () => {
       const artifactPath = await tempFile('handoff.md', '# handoff')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
 
-      const result = await commands.resolveTerminalPath(
+      const result = await paths.resolveTerminalPath(
         'id:wt-1',
         artifactPath,
         null,
@@ -82,10 +80,10 @@ describe('RuntimeFileCommands', () => {
 
     // Why: procfs reports size 0 for files with content, so the grant digest cannot trust stat size.
     it.runIf(process.platform === 'linux')('reads a procfs file that reports size 0', async () => {
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
 
       const target = absoluteFileTarget(
-        await commands.resolveTerminalPath('id:wt-1', '/proc/version', null, 'client-a')
+        await paths.resolveTerminalPath('id:wt-1', '/proc/version', null, 'client-a')
       )
 
       await expect(
@@ -100,10 +98,10 @@ describe('RuntimeFileCommands', () => {
 
     // Why: opening a FIFO or device blocking would stall a host threadpool thread.
     it.skipIf(process.platform === 'win32')('refuses a device instead of granting it', async () => {
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths } = createTerminalArtifactSubjects({ path: '/repo' })
 
       await expect(
-        commands.resolveTerminalPath('id:wt-1', '/dev/null', null, 'client-a')
+        paths.resolveTerminalPath('id:wt-1', '/dev/null', null, 'client-a')
       ).rejects.toThrow('Not a regular file')
     })
   })

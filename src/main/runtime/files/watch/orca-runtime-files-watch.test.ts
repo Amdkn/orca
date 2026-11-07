@@ -56,7 +56,7 @@ import {
   _resetRuntimeFileWatcherLeasesForTests,
   awaitRuntimeFileWatcherUnsubscribes
 } from './file-watcher-leases'
-import { RuntimeFileCommands } from '../../orca-runtime-files'
+import { RuntimeFileWatches } from './file-watches'
 import {
   WINDOWS_RUNTIME_FILE_WATCH_CLOSE_DEADLINE_MS,
   WINDOWS_RUNTIME_FILE_WATCH_LEADING_MS
@@ -68,9 +68,9 @@ function createWindowsWatcher(close: () => void) {
   return watcher
 }
 
-function createRuntimeFileCommands(rootPath: string) {
+function createRuntimeFileWatches(rootPath: string) {
   const store = { getRepo: vi.fn(() => undefined) }
-  const commands = new RuntimeFileCommands({
+  const commands = new RuntimeFileWatches({
     getRuntimeId: () => 'runtime-1',
     requireStore: () => store,
     resolveRuntimeFileTarget: vi.fn(async () => ({
@@ -83,11 +83,12 @@ function createRuntimeFileCommands(rootPath: string) {
     })),
     resolveRuntimeGitTarget: vi.fn(),
     openFile: vi.fn()
+    // SAFETY: Watch subjects read only the target resolver and explicitly stubbed host capabilities.
   } as never)
   return { commands, store }
 }
 
-describe('RuntimeFileCommands file watching', () => {
+describe('RuntimeFileWatches', () => {
   const originalPlatform = process.platform
   // Windows uses fs.watch directly instead of the watcher process.
   const posixWatcherProcessIt = process.platform === 'win32' ? it.skip : it
@@ -121,7 +122,7 @@ describe('RuntimeFileCommands file watching', () => {
     watchMock.mockReturnValue(watcher)
     resolveAuthorizedPathMock.mockResolvedValue('C:\\repo')
     statMock.mockResolvedValue({ isDirectory: () => true })
-    const { commands } = createRuntimeFileCommands('C:\\repo')
+    const { commands } = createRuntimeFileWatches('C:\\repo')
     await commands.watchFileExplorer('id:wt-1', vi.fn())
 
     let settled = false
@@ -146,7 +147,7 @@ describe('RuntimeFileCommands file watching', () => {
     })
     resolveAuthorizedPathMock.mockResolvedValue('C:\\repo')
     statMock.mockResolvedValue({ isDirectory: () => true })
-    const { commands } = createRuntimeFileCommands('C:\\repo')
+    const { commands } = createRuntimeFileWatches('C:\\repo')
     const callbacks = Array.from({ length: 2 }, () => vi.fn())
     const releases = await Promise.all(
       callbacks.map((callback) => commands.watchFileExplorer('id:wt-1', callback))
@@ -174,7 +175,7 @@ describe('RuntimeFileCommands file watching', () => {
     watchMock.mockReturnValue(watcher)
     resolveAuthorizedPathMock.mockResolvedValue('C:\\repo')
     statMock.mockResolvedValue({ isDirectory: () => true })
-    const { commands } = createRuntimeFileCommands('C:\\repo')
+    const { commands } = createRuntimeFileWatches('C:\\repo')
     await commands.watchFileExplorer('id:wt-1', vi.fn())
 
     const closePromise = commands.closeFileExplorerWatchersForPath('C:\\repo')
@@ -219,7 +220,7 @@ describe('RuntimeFileCommands file watching', () => {
         })
     )
     watchInWatcherProcessMock.mockResolvedValue(disposeMock)
-    const { commands } = createRuntimeFileCommands('/repo')
+    const { commands } = createRuntimeFileWatches('/repo')
 
     const unsubscribe = await commands.watchFileExplorer('id:wt-1', vi.fn())
     unsubscribe()

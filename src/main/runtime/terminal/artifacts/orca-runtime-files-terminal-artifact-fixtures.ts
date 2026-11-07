@@ -2,7 +2,9 @@ import { afterEach } from 'vitest'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { RuntimeFileCommands } from '../../orca-runtime-files'
+import { RuntimeTerminalPathResolver } from '../terminal-path-resolver'
+import { RuntimeTerminalArtifacts } from './terminal-artifacts'
+import { createRuntimeFileHost } from '../../files/runtime-file-host.test-fixture'
 import { resolveAuthorizedPathMock, statMock } from '../../files/runtime-file-command-mock-registry'
 
 export function useTerminalArtifactTempFiles(): {
@@ -46,11 +48,20 @@ export function statAsFile() {
 }
 
 export function resolveTerminalArtifactPath(
-  commands: RuntimeFileCommands,
+  commands: RuntimeTerminalPathResolver,
   pathText: string,
   cwd: string | null = null,
   clientId = 'client-a',
   crossWorkspace = false
 ) {
   return commands.resolveTerminalPath('id:wt-1', pathText, cwd, clientId, 'term-1', crossWorkspace)
+}
+
+export function createTerminalArtifactSubjects(
+  options?: Parameters<typeof createRuntimeFileHost>[0]
+) {
+  const { host, store } = createRuntimeFileHost(options)
+  const commands = new RuntimeTerminalArtifacts(host)
+  const paths = new RuntimeTerminalPathResolver(host, commands)
+  return { commands, paths, store }
 }

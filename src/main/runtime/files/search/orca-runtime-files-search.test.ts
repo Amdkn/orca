@@ -1,3 +1,4 @@
+import { RuntimeFileSearch } from './file-search'
 import { describe, expect, it, vi } from 'vitest'
 import { EventEmitter } from 'node:events'
 import {
@@ -6,9 +7,9 @@ import {
   wslAwareSpawnMock
 } from '../runtime-file-command-mock-registry'
 import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from '../orca-runtime-files-test-harness'
+  createRuntimeFileHost,
+  useRuntimeFileHostLifecycle
+} from '../runtime-file-host.test-fixture'
 import { SEARCH_TIMEOUT_MS } from '../../../../shared/text-search'
 
 vi.mock('fs', async () => (await import('../runtime-file-command-mock-registry')).fsModuleMock())
@@ -55,11 +56,11 @@ async function flushRuntimeSearchMicrotasks(): Promise<void> {
   }
 }
 
-describe('RuntimeFileCommands', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeFileSearch', () => {
+  useRuntimeFileHostLifecycle()
 
   it('keeps concurrent runtime clients on the same root independent during cancellation', async () => {
-    const { commands } = createRuntimeFileCommands()
+    const { commands } = createFileSearch()
     const firstChild = createRuntimeSearchChild()
     const secondChild = createRuntimeSearchChild()
     resolveAuthorizedPathMock.mockResolvedValue('/repo')
@@ -93,7 +94,7 @@ describe('RuntimeFileCommands', () => {
       },
       executionHostId: 'local'
     }))
-    const { commands } = createRuntimeFileCommands({ resolveRuntimeFileTarget })
+    const { commands } = createFileSearch({ resolveRuntimeFileTarget })
     const child = createRuntimeSearchChild()
     resolveAuthorizedPathMock.mockResolvedValue('/repo')
     wslAwareSpawnMock.mockReturnValue(child)
@@ -125,7 +126,7 @@ describe('RuntimeFileCommands', () => {
   it.each(['ignored', 'erroring'] as const)(
     'publishes capped results and detaches when termination is %s',
     async (termination) => {
-      const { commands } = createRuntimeFileCommands()
+      const { commands } = createFileSearch()
       const child = createRuntimeSearchChild()
       if (termination === 'erroring') {
         child.kill.mockImplementation(() => {
@@ -173,3 +174,8 @@ describe('RuntimeFileCommands', () => {
     }
   )
 })
+
+function createFileSearch(options?: Parameters<typeof createRuntimeFileHost>[0]) {
+  const { host, store } = createRuntimeFileHost(options)
+  return { commands: new RuntimeFileSearch(host), store }
+}

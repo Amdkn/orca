@@ -1,9 +1,10 @@
+import { RuntimeFileSearch } from './file-search'
 import { describe, expect, it, vi } from 'vitest'
 import { readdirMock, wslAwareSpawnMock } from '../runtime-file-command-mock-registry'
 import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from '../orca-runtime-files-test-harness'
+  createRuntimeFileHost,
+  useRuntimeFileHostLifecycle
+} from '../runtime-file-host.test-fixture'
 
 vi.mock('fs', async () => (await import('../runtime-file-command-mock-registry')).fsModuleMock())
 vi.mock('fs/promises', async () =>
@@ -30,10 +31,10 @@ vi.mock('../../../ripgrep/bundled-ripgrep-path', async () =>
 // Why: this process serves no SSH filesystem, so Quick Open on an `ssh:` workspace reports no
 // matches (version 0) instead of failing the keystroke, and never lists this machine.
 describe('runtime SSH Quick Open', () => {
-  useRuntimeFileCommandsLifecycle()
+  useRuntimeFileHostLifecycle()
 
   it('reports no matches and capability 0 without listing this machine', async () => {
-    const { commands } = createRuntimeFileCommands({ hostId: 'ssh:ssh-1' })
+    const { commands } = createFileSearch({ hostId: 'ssh:ssh-1' })
 
     await expect(commands.searchQuickOpenFilePaths('id:wt-1', 'target', 7)).resolves.toMatchObject({
       files: [],
@@ -52,3 +53,8 @@ describe('runtime SSH Quick Open', () => {
     expect(wslAwareSpawnMock).not.toHaveBeenCalled()
   })
 })
+
+function createFileSearch(options?: Parameters<typeof createRuntimeFileHost>[0]) {
+  const { host, store } = createRuntimeFileHost(options)
+  return { commands: new RuntimeFileSearch(host), store }
+}

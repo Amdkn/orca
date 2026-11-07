@@ -1,3 +1,4 @@
+import { createTerminalArtifactSubjects } from './orca-runtime-files-terminal-artifact-fixtures'
 import { describe, expect, it, vi } from 'vitest'
 import { open, readFile, rm, symlink, utimes, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -6,10 +7,7 @@ import {
   resolveAuthorizedPathMock,
   statMock
 } from '../../files/runtime-file-command-mock-registry'
-import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from '../../files/orca-runtime-files-test-harness'
+import { useRuntimeFileHostLifecycle } from '../../files/runtime-file-host.test-fixture'
 import {
   absoluteFileTarget,
   resolveTerminalArtifactPath,
@@ -42,19 +40,19 @@ vi.mock(
     (await import('../../files/runtime-file-command-mock-registry')).localWorktreeRuntimeOptionsMock
 )
 
-describe('RuntimeFileCommands', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeTerminalArtifacts', () => {
+  useRuntimeFileHostLifecycle()
 
   describe('resolveTerminalPath', () => {
     const { tempFile } = useTerminalArtifactTempFiles()
 
     it('reads an absolute terminal artifact only for the client that received the grant', async () => {
       const artifactPath = await tempFile('result.json', '{"ok":true}')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
       statMock.mockResolvedValue({ isDirectory: () => false, size: 11, dev: 1, ino: 2, mtimeMs: 3 })
 
-      const result = await resolveTerminalArtifactPath(commands, artifactPath)
+      const result = await resolveTerminalArtifactPath(paths, artifactPath)
       const target = absoluteFileTarget(result)
 
       await expect(
@@ -81,10 +79,10 @@ describe('RuntimeFileCommands', () => {
 
     it('rejects stale absolute terminal artifact writes before changing the file', async () => {
       const artifactPath = await tempFile('result.json', '{"ok":true}')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
 
-      const result = await resolveTerminalArtifactPath(commands, artifactPath)
+      const result = await resolveTerminalArtifactPath(paths, artifactPath)
       const target = absoluteFileTarget(result)
       await rm(artifactPath)
       await writeFile(artifactPath, '{"ok":"ext"}')
@@ -103,14 +101,14 @@ describe('RuntimeFileCommands', () => {
 
     it('lets only one of two concurrent writes from different clients land', async () => {
       const artifactPath = await tempFile('result.json', '{"ok":true}')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
       // The registry stubs rename; commit for real so the second writer sees the first one's bytes.
       renameMock.mockImplementation(async (from, to) => writeFile(to, await readFile(from)))
 
-      const first = absoluteFileTarget(await resolveTerminalArtifactPath(commands, artifactPath))
+      const first = absoluteFileTarget(await resolveTerminalArtifactPath(paths, artifactPath))
       const second = absoluteFileTarget(
-        await resolveTerminalArtifactPath(commands, artifactPath, null, 'client-b')
+        await resolveTerminalArtifactPath(paths, artifactPath, null, 'client-b')
       )
 
       const results = await Promise.allSettled([
@@ -142,11 +140,11 @@ describe('RuntimeFileCommands', () => {
 
     it('keeps the original terminal artifact when atomic commit fails', async () => {
       const artifactPath = await tempFile('result.json', '{"ok":true}')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
       renameMock.mockRejectedValueOnce(new Error('ENOSPC'))
 
-      const result = await resolveTerminalArtifactPath(commands, artifactPath)
+      const result = await resolveTerminalArtifactPath(paths, artifactPath)
       const target = absoluteFileTarget(result)
 
       await expect(
@@ -166,9 +164,9 @@ describe('RuntimeFileCommands', () => {
       bytes[0] = 0
       const artifactPath = await tempFile('teste.mp4', '')
       await writeFile(artifactPath, bytes)
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
-      const target = absoluteFileTarget(await resolveTerminalArtifactPath(commands, artifactPath))
+      const target = absoluteFileTarget(await resolveTerminalArtifactPath(paths, artifactPath))
       const readPage = (offset: number, clientId = 'client-a') =>
         commands.readTerminalArtifactChunk(
           'id:wt-1',
@@ -198,9 +196,9 @@ describe('RuntimeFileCommands', () => {
       // Whole seconds, so restoring them reproduces the granted mtime exactly.
       const pinnedSeconds = 1_700_000_000
       await utimes(artifactPath, pinnedSeconds, pinnedSeconds)
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
-      const target = absoluteFileTarget(await resolveTerminalArtifactPath(commands, artifactPath))
+      const target = absoluteFileTarget(await resolveTerminalArtifactPath(paths, artifactPath))
 
       const handle = await open(artifactPath, 'r+')
       const grantedCtimeMs = (await handle.stat()).ctimeMs
@@ -227,10 +225,10 @@ describe('RuntimeFileCommands', () => {
       const artifactPath = await tempFile('result.json', '{"ok":true}')
       const outsidePath = join(artifactPath, '..', 'outside.json')
       await writeFile(outsidePath, '{"secret":true}')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
 
-      const result = await resolveTerminalArtifactPath(commands, artifactPath)
+      const result = await resolveTerminalArtifactPath(paths, artifactPath)
       const target = absoluteFileTarget(result)
       await rm(artifactPath)
       await symlink(outsidePath, artifactPath)
@@ -249,10 +247,10 @@ describe('RuntimeFileCommands', () => {
       const artifactPath = await tempFile('result.json', '{"ok":true}')
       const outsidePath = join(artifactPath, '..', 'outside.json')
       await writeFile(outsidePath, '{"secret":true}')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
 
-      const result = await resolveTerminalArtifactPath(commands, artifactPath)
+      const result = await resolveTerminalArtifactPath(paths, artifactPath)
       const target = absoluteFileTarget(result)
       await rm(artifactPath)
       await symlink(outsidePath, artifactPath)
@@ -272,10 +270,10 @@ describe('RuntimeFileCommands', () => {
     it('keeps local terminal artifact previews above the remote cap available', async () => {
       const size = RUNTIME_PREVIEWABLE_BINARY_MAX_BYTES + 1
       const artifactPath = await tempFile('result.png', 'a'.repeat(size))
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
 
-      const result = await resolveTerminalArtifactPath(commands, artifactPath)
+      const result = await resolveTerminalArtifactPath(paths, artifactPath)
       const target = absoluteFileTarget(result)
 
       await expect(
@@ -295,7 +293,7 @@ describe('RuntimeFileCommands', () => {
 
     it('rejects binary-extension terminal artifacts from the editable text path', async () => {
       const artifactPath = await tempFile('report.pdf', '%PDF text-looking bytes')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
       statMock.mockResolvedValue({
         isDirectory: () => false,
@@ -305,7 +303,7 @@ describe('RuntimeFileCommands', () => {
         mtimeMs: 3
       })
 
-      const result = await resolveTerminalArtifactPath(commands, artifactPath)
+      const result = await resolveTerminalArtifactPath(paths, artifactPath)
       const target = absoluteFileTarget(result)
 
       await expect(

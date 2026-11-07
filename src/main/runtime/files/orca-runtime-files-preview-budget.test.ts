@@ -1,12 +1,13 @@
+import { RuntimeFileReads } from './file-reads'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { resolveAuthorizedPathMock, statMock } from './runtime-file-command-mock-registry'
 import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from './orca-runtime-files-test-harness'
+  createRuntimeFileHost,
+  useRuntimeFileHostLifecycle
+} from './runtime-file-host.test-fixture'
 import { RUNTIME_PREVIEWABLE_BINARY_MAX_BYTES } from './file-preview-budget'
 import { REMOTE_RPC_MAX_CONTENT_BYTES } from '../../../shared/remote-rpc-content-budget'
 import { SshHostNotServedError } from '../../providers/ssh-host-not-served-error'
@@ -30,8 +31,8 @@ vi.mock(
   async () => (await import('./runtime-file-command-mock-registry')).localWorktreeRuntimeOptionsMock
 )
 
-describe('RuntimeFileCommands', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeFileReads', () => {
+  useRuntimeFileHostLifecycle()
 
   // Mobile image tabs use readPreview; exceeding the outbound budget would kill their socket.
   describe('previewable binary budget', () => {
@@ -51,7 +52,7 @@ describe('RuntimeFileCommands', () => {
 
     it('rejects a previewable image one byte above the cap', async () => {
       const dir = await previewFixture(RUNTIME_PREVIEWABLE_BINARY_MAX_BYTES + 1)
-      const { commands } = createRuntimeFileCommands({ path: dir })
+      const { commands } = createFileReads({ path: dir })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
 
       await expect(
@@ -62,7 +63,7 @@ describe('RuntimeFileCommands', () => {
     it('keeps local previews above the remote cap available without a request budget', async () => {
       const size = RUNTIME_PREVIEWABLE_BINARY_MAX_BYTES + 1
       const dir = await previewFixture(size)
-      const { commands } = createRuntimeFileCommands({ path: dir })
+      const { commands } = createFileReads({ path: dir })
       resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
 
       await expect(commands.readFileExplorerPreview('id:wt-1', 'logo.png')).resolves.toEqual({
@@ -77,7 +78,7 @@ describe('RuntimeFileCommands', () => {
     it('reads a chat image outside every project root but never another file type', async () => {
       const dir = await previewFixture()
       await writeFile(join(dir, 'notes.txt'), 'secret')
-      const { commands } = createRuntimeFileCommands()
+      const { commands } = createFileReads()
       statMock.mockResolvedValue({ isFile: () => true })
       resolveAuthorizedPathMock.mockRejectedValue(new Error('Access denied'))
 
@@ -104,7 +105,7 @@ describe('RuntimeFileCommands', () => {
 
     it('refuses chat images for an SSH workspace, whose paths name the remote machine', async () => {
       const dir = await previewFixture()
-      const { commands } = createRuntimeFileCommands({
+      const { commands } = createFileReads({
         resolveRuntimeFileTarget: vi.fn(async () => ({
           worktree: { id: 'wt-1', repoId: 'repo-1', path: '/remote/repo' },
           executionHostId: 'ssh:ssh-1'
@@ -117,3 +118,8 @@ describe('RuntimeFileCommands', () => {
     })
   })
 })
+
+function createFileReads(options?: Parameters<typeof createRuntimeFileHost>[0]) {
+  const { host, store } = createRuntimeFileHost(options)
+  return { commands: new RuntimeFileReads(host), store }
+}

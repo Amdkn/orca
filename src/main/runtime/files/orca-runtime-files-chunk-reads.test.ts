@@ -1,9 +1,10 @@
+import { RuntimeFileReads } from './file-reads'
 import { describe, expect, it, vi } from 'vitest'
 import { openMock } from './runtime-file-command-mock-registry'
 import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from './orca-runtime-files-test-harness'
+  createRuntimeFileHost,
+  useRuntimeFileHostLifecycle
+} from './runtime-file-host.test-fixture'
 import { SshHostNotServedError } from '../../providers/ssh-host-not-served-error'
 
 vi.mock('fs', async () => (await import('./runtime-file-command-mock-registry')).fsModuleMock())
@@ -25,11 +26,11 @@ vi.mock(
   async () => (await import('./runtime-file-command-mock-registry')).localWorktreeRuntimeOptionsMock
 )
 
-describe('RuntimeFileCommands.readFileExplorerChunk', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeFileReads.readFileExplorerChunk', () => {
+  useRuntimeFileHostLifecycle()
 
   it('refuses an SSH worktree without opening a local file', async () => {
-    const { commands } = createRuntimeFileCommands({
+    const { commands } = createFileReads({
       path: '/remote/repo',
       resolveRuntimeFileTarget: vi.fn(async () => ({
         worktree: { id: 'wt-1', repoId: 'repo-1', path: '/remote/repo' },
@@ -43,3 +44,8 @@ describe('RuntimeFileCommands.readFileExplorerChunk', () => {
     expect(openMock).not.toHaveBeenCalled()
   })
 })
+
+function createFileReads(options?: Parameters<typeof createRuntimeFileHost>[0]) {
+  const { host, store } = createRuntimeFileHost(options)
+  return { commands: new RuntimeFileReads(host), store }
+}

@@ -146,9 +146,19 @@ export abstract class OrcaRuntimeWithStateFields extends OrcaRuntimeWithLinearCo
     this.machineName.start()
     this.getSetupTerminalTitle = deps?.getSetupTerminalTitle ?? (() => 'Setup')
     this.prepareClaudeAuth = deps?.prepareClaudeAuth
-    installRuntimeFileCommandSurface(this, this.fileCommands)
+    installRuntimeFileCommandSurface(
+      this,
+      this.fileSearch,
+      this.terminalArtifacts,
+      this.fileAccess,
+      this.fileReads,
+      this.fileMutations,
+      this.stagedFileSaveCommands,
+      this.fileWatches,
+      this.terminalPaths
+    )
     // Host start: drop what a crashed run's staged saves left in the staging folder.
-    this.fileCommands.stagedFileSaves.sweepOrphans()
+    this.stagedFileSaveCommands.sweepOrphans()
     installRuntimeGitCommandSurface(this, this.gitCommands)
     installRuntimeRepositoryCommandSurface(this, {
       projectHostSetups: this.projectHostSetups,

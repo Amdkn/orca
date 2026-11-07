@@ -1,11 +1,12 @@
+import { RuntimeFileAccess } from './file-access'
 import { describe, expect, it, vi } from 'vitest'
 
 import type * as FileSystem from 'node:fs/promises'
 import { resolveAuthorizedPathMock, statMock } from './runtime-file-command-mock-registry'
 import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from './orca-runtime-files-test-harness'
+  createRuntimeFileHost,
+  useRuntimeFileHostLifecycle
+} from './runtime-file-host.test-fixture'
 
 vi.mock('fs', async () => (await import('./runtime-file-command-mock-registry')).fsModuleMock())
 vi.mock('fs/promises', async () =>
@@ -26,8 +27,8 @@ vi.mock(
   async () => (await import('./runtime-file-command-mock-registry')).localWorktreeRuntimeOptionsMock
 )
 
-describe('RuntimeFileCommands', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeFileAccess', () => {
+  useRuntimeFileHostLifecycle()
 
   it('detects a real same-size rewrite even after restoring the modification time', async () => {
     vi.useRealTimers()
@@ -39,7 +40,7 @@ describe('RuntimeFileCommands', () => {
     try {
       await files.writeFile(filePath, 'abc')
       await files.utimes(filePath, 1, 2)
-      const { commands } = createRuntimeFileCommands()
+      const { commands } = createFileAccess()
       resolveAuthorizedPathMock.mockResolvedValue(filePath)
       statMock.mockImplementation((path: string) => files.stat(path))
       const before = await commands.statRuntimeFile('id:wt-1', 'video.mp4')
@@ -55,3 +56,8 @@ describe('RuntimeFileCommands', () => {
     }
   })
 })
+
+function createFileAccess(options?: Parameters<typeof createRuntimeFileHost>[0]) {
+  const { host, store } = createRuntimeFileHost(options)
+  return { commands: new RuntimeFileAccess(host), store }
+}

@@ -1,10 +1,12 @@
+import { RuntimeTerminalPathResolver } from '../terminal-path-resolver'
+import { RuntimeTerminalArtifacts } from './terminal-artifacts'
 import { describe, expect, it, vi } from 'vitest'
 import { realpath } from 'node:fs/promises'
 import { statMock } from '../../files/runtime-file-command-mock-registry'
 import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from '../../files/orca-runtime-files-test-harness'
+  createRuntimeFileHost,
+  useRuntimeFileHostLifecycle
+} from '../../files/runtime-file-host.test-fixture'
 import {
   resolveTerminalArtifactPath,
   useTerminalArtifactTempFiles
@@ -32,8 +34,8 @@ vi.mock(
     (await import('../../files/runtime-file-command-mock-registry')).localWorktreeRuntimeOptionsMock
 )
 
-describe('RuntimeFileCommands', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeTerminalPathResolver', () => {
+  useRuntimeFileHostLifecycle()
 
   describe('resolveTerminalPath', () => {
     const { tempFile } = useTerminalArtifactTempFiles()
@@ -42,7 +44,7 @@ describe('RuntimeFileCommands', () => {
       Object.defineProperty(process, 'platform', { configurable: true, value: 'linux' })
       const artifactPath = await tempFile('result.json', '{}')
       const resolveTerminalFileUriHostname = vi.fn(() => 'laptop.local')
-      const { commands } = createRuntimeFileCommands({
+      const { commands } = createTerminalPathResolver({
         path: '/repo',
         resolveTerminalFileUriHostname
       })
@@ -61,7 +63,7 @@ describe('RuntimeFileCommands', () => {
     it('opens IPv4 loopback local POSIX terminal links as local paths', async () => {
       Object.defineProperty(process, 'platform', { configurable: true, value: 'linux' })
       const artifactPath = await tempFile('result.json', '{}')
-      const { commands } = createRuntimeFileCommands({ path: '/repo' })
+      const { commands } = createTerminalPathResolver({ path: '/repo' })
       const canonicalPath = await realpath(artifactPath)
 
       const result = await resolveTerminalArtifactPath(commands, `//127.0.0.1${artifactPath}`)
@@ -80,7 +82,7 @@ describe('RuntimeFileCommands', () => {
 
     it('refuses host-qualified terminal links on an SSH workspace instead of reading this machine', async () => {
       const resolveTerminalFileUriHostname = vi.fn(() => 'remote-host')
-      const { commands, store } = createRuntimeFileCommands({
+      const { commands, store } = createTerminalPathResolver({
         path: '/home/me/repo',
         resolveTerminalFileUriHostname
       })
@@ -102,3 +104,11 @@ describe('RuntimeFileCommands', () => {
     })
   })
 })
+
+function createTerminalPathResolver(options?: Parameters<typeof createRuntimeFileHost>[0]) {
+  const { host, store } = createRuntimeFileHost(options)
+  return {
+    commands: new RuntimeTerminalPathResolver(host, new RuntimeTerminalArtifacts(host)),
+    store
+  }
+}

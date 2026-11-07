@@ -1,10 +1,11 @@
+import { RuntimeFileSearch } from './file-search'
 import { describe, expect, it, vi } from 'vitest'
 import { EventEmitter } from 'node:events'
 import { resolveAuthorizedPathMock, wslAwareSpawnMock } from '../runtime-file-command-mock-registry'
 import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from '../orca-runtime-files-test-harness'
+  createRuntimeFileHost,
+  useRuntimeFileHostLifecycle
+} from '../runtime-file-host.test-fixture'
 
 vi.mock('fs', async () => (await import('../runtime-file-command-mock-registry')).fsModuleMock())
 vi.mock('fs/promises', async () =>
@@ -47,11 +48,11 @@ async function flushRuntimeSearchMicrotasks(): Promise<void> {
   }
 }
 
-describe('RuntimeFileCommands', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeFileSearch', () => {
+  useRuntimeFileHostLifecycle()
 
   it('assembles a fragmented runtime search record without rescanning the carry', async () => {
-    const { commands } = createRuntimeFileCommands({
+    const { commands } = createFileSearch({
       resolveRuntimeFileTarget: vi.fn(async () => ({
         worktree: { id: 'wt-1', repoId: 'repo-1', path: '/repo' },
         executionHostId: 'local'
@@ -104,3 +105,8 @@ describe('RuntimeFileCommands', () => {
     expect(child.stdout.listenerCount('data')).toBe(0)
   })
 })
+
+function createFileSearch(options?: Parameters<typeof createRuntimeFileHost>[0]) {
+  const { host, store } = createRuntimeFileHost(options)
+  return { commands: new RuntimeFileSearch(host), store }
+}

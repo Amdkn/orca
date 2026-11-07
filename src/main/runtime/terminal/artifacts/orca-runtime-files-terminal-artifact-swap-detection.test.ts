@@ -1,11 +1,9 @@
+import { createTerminalArtifactSubjects } from './orca-runtime-files-terminal-artifact-fixtures'
 import { describe, expect, it, vi } from 'vitest'
 import { rm, writeFile } from 'node:fs/promises'
 import type * as FsPromises from 'node:fs/promises'
 import { openMock, resolveAuthorizedPathMock } from '../../files/runtime-file-command-mock-registry'
-import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from '../../files/orca-runtime-files-test-harness'
+import { useRuntimeFileHostLifecycle } from '../../files/runtime-file-host.test-fixture'
 import {
   absoluteFileTarget,
   resolveTerminalArtifactPath,
@@ -56,14 +54,14 @@ function replayFirstStatPerPath(): void {
 }
 
 describe('terminal artifact swap detection', () => {
-  useRuntimeFileCommandsLifecycle()
+  useRuntimeFileHostLifecycle()
 
   const { tempFile } = useTerminalArtifactTempFiles()
 
   async function grantFor(artifactPath: string) {
-    const { commands } = createRuntimeFileCommands({ path: '/repo' })
+    const { paths, commands } = createTerminalArtifactSubjects({ path: '/repo' })
     resolveAuthorizedPathMock.mockImplementation(async (p: string) => p)
-    const result = await resolveTerminalArtifactPath(commands, artifactPath)
+    const result = await resolveTerminalArtifactPath(paths, artifactPath)
     return { commands, target: absoluteFileTarget(result) }
   }
 

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, vi } from 'vitest'
 import { awaitRuntimeFileWatcherUnsubscribes } from './watch/file-watcher-leases'
-import { RuntimeFileCommands } from '../orca-runtime-files'
+import type { RuntimeFileCommandHost } from './file-command-host'
 import { resetSshConnectionGenerations } from '../../ssh/connection/ssh-connection-generation'
 import { resetRuntimeFileMocks } from './runtime-file-command-mock-registry'
 import {
@@ -9,7 +9,7 @@ import {
   type ExecutionHostId
 } from '../../../shared/execution-host'
 
-export function useRuntimeFileCommandsLifecycle(): void {
+export function useRuntimeFileHostLifecycle(): void {
   const originalPlatform = process.platform
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ export function useRuntimeFileCommandsLifecycle(): void {
   })
 }
 
-export function createRuntimeFileCommands(options?: {
+export function createRuntimeFileHost(options?: {
   path?: string
   hostId?: string
   openFile?: ReturnType<typeof vi.fn>
@@ -45,7 +45,7 @@ export function createRuntimeFileCommands(options?: {
 }) {
   const store = {
     getSettings: vi.fn(() => ({ followSymlinkedDirectories: false })),
-    getRepo: vi.fn((_repoId?: string) => undefined as { connectionId?: string } | undefined)
+    getRepo: vi.fn<(_repoId?: string) => { connectionId?: string } | undefined>(() => undefined)
   }
   const path = options?.path ?? '/repo'
   const worktree = {
@@ -59,7 +59,7 @@ export function createRuntimeFileCommands(options?: {
     const connectionId = store.getRepo(worktree.repoId)?.connectionId
     return normalizeExecutionHostId(options?.hostId) ?? getConnectionExecutionHostId(connectionId)
   }
-  const commands = new RuntimeFileCommands({
+  const host = {
     getRuntimeId: () => 'runtime-1',
     requireStore: () => store,
     resolveRuntimeFileTarget:
@@ -78,6 +78,7 @@ export function createRuntimeFileCommands(options?: {
     resolveRuntimeGitTarget: options?.resolveRuntimeGitTarget ?? vi.fn(),
     openFile: options?.openFile ?? vi.fn(),
     ...(options?.openDiff ? { openDiff: options.openDiff } : {})
-  } as never)
-  return { commands, store }
+    // SAFETY: Existing file subjects read only the explicitly mocked host/store capabilities.
+  } as unknown as RuntimeFileCommandHost
+  return { host, store }
 }

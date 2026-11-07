@@ -1,10 +1,11 @@
+import { RuntimeFileWatches } from './file-watches'
 import { describe, expect, it, vi } from 'vitest'
 import { SshHostNotServedError } from '../../../providers/ssh-host-not-served-error'
 import { watchInWatcherProcessMock, watchMock } from '../runtime-file-command-mock-registry'
 import {
-  createRuntimeFileCommands,
-  useRuntimeFileCommandsLifecycle
-} from '../orca-runtime-files-test-harness'
+  createRuntimeFileHost,
+  useRuntimeFileHostLifecycle
+} from '../runtime-file-host.test-fixture'
 
 vi.mock('fs', async () => (await import('../runtime-file-command-mock-registry')).fsModuleMock())
 vi.mock('fs/promises', async () =>
@@ -26,11 +27,11 @@ vi.mock(
     (await import('../runtime-file-command-mock-registry')).localWorktreeRuntimeOptionsMock
 )
 
-describe('RuntimeFileCommands', () => {
-  useRuntimeFileCommandsLifecycle()
+describe('RuntimeFileWatches', () => {
+  useRuntimeFileHostLifecycle()
 
   it('refuses an SSH runtime watch without watching this machine', async () => {
-    const { commands, store } = createRuntimeFileCommands({ path: '/remote/repo' })
+    const { commands, store } = createFileWatches({ path: '/remote/repo' })
     store.getRepo.mockReturnValue({ connectionId: 'ssh-1' })
 
     await expect(commands.watchFileExplorer('id:wt-1', vi.fn())).rejects.toThrow(
@@ -40,3 +41,8 @@ describe('RuntimeFileCommands', () => {
     expect(watchMock).not.toHaveBeenCalled()
   })
 })
+
+function createFileWatches(options?: Parameters<typeof createRuntimeFileHost>[0]) {
+  const { host, store } = createRuntimeFileHost(options)
+  return { commands: new RuntimeFileWatches(host), store }
+}
