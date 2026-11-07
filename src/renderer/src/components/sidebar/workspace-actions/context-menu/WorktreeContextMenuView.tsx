@@ -80,6 +80,7 @@ export default function WorktreeContextMenuView({ model }: { model: WorktreeCont
     handleSleepSubtree,
     handleTogglePin,
     handleToggleRead,
+    showsUnread,
     hasAnyContextLineage,
     hasParentLink,
     isDeleting,
@@ -201,12 +202,8 @@ export default function WorktreeContextMenuView({ model }: { model: WorktreeCont
                   : translate('auto.components.sidebar.WorktreeContextMenu.3baa7d6507', 'Pin')}
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={handleToggleRead} disabled={isDeleting}>
-                {worktree.isUnread ? (
-                  <BellOff className="size-3.5" />
-                ) : (
-                  <Bell className="size-3.5" />
-                )}
-                {worktree.isUnread
+                {showsUnread ? <BellOff className="size-3.5" /> : <Bell className="size-3.5" />}
+                {showsUnread
                   ? translate('auto.components.sidebar.WorktreeContextMenu.8dacff1fe0', 'Mark Read')
                   : translate(
                       'auto.components.sidebar.WorktreeContextMenu.f50603c6b2',
