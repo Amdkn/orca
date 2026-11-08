@@ -1,6 +1,6 @@
 import { structuredAgentLabel } from './structured-agent-session-launch-label'
 import { translate } from '@/i18n/i18n'
-import { readStructuredChatTabSavedName } from '@/runtime/structured-chat-tab-name'
+import { readStructuredChatTabSavedName } from '@/runtime/native-chat/naming/structured-chat-tab-name'
 import {
   getStructuredLaunchStateBySessionId,
   notifyStructuredLaunchListeners
@@ -13,7 +13,7 @@ import { insertUnifiedTabAfterAnchor } from '../../unified-tab-anchor-insertion'
 import { useAppStore } from '@/store/index'
 import type { OpenedAgentSessionTab } from './pane/structured-agent-session-tab-open-through-layout-owner'
 import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
-import { sendLayoutCommandToOwner } from '@/runtime/layout-owner-command'
+import { sendLayoutCommandToOwner } from '@/runtime/workspace-layout/commands/layout-owner-command'
 import {
   declinedTerminalCanOpen,
   openDeclinedStructuredLaunchTerminal,
