@@ -1,0 +1,24 @@
+{
+  "adapter": "aspace-orca-adapter",
+  "auto_update": {
+    "autoDownload": false,
+    "autoInstallOnAppQuit": false,
+    "comment": "Le chemin de lancement de l'adapter n'appelle jamais scheduleAutomaticUpdateCheck (updater-scheduling.ts) : le check de fond 24 h n'est planifie que par le processus principal Electron (updater-setup.ts), que le lanceur CLI ne demarre jamais. La commande de mise a jour manuelle est exclue du contrat."
+  },
+  "cli_entry": "out/cli/index.js",
+  "command_linux": "orca-ide",
+  "command_upstream": "orca",
+  "env_forced_by_launcher": ["ORCA_TELEMETRY_DISABLED=1", "DO_NOT_TRACK=1"],
+  "gel": "708aca6a46a09c3ad3503bd3abe0ae94b502e9a7",
+  "module": "orca",
+  "orcad": {
+    "bind": "127.0.0.1",
+    "comment": "Loopback seul, par defaut amont (orcad-bind-address.ts). --bind 0.0.0.0 et allowPublic exclus du contrat. V5 ne lance jamais orcad."
+  },
+  "telemetry": {
+    "DO_NOT_TRACK": "1",
+    "ORCA_TELEMETRY_DISABLED": "1",
+    "comment": "Kill switches reconnus par resolveEnvOverride dans src/main/telemetry/consent.ts (priorite sur tout choix stocke). Forces par le lanceur et par ce fichier."
+  },
+  "version": "0.1.0"
+}

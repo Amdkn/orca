@@ -1,0 +1,84 @@
+{
+  "adapter": "aspace-orca-adapter",
+  "cli": {
+    "entry": "out/cli/index.js",
+    "notes": {
+      "version": "--version sur un build CLI seul repond 'Could not determine the Orca version for this build.' (exit 1) : le lecteur de version (src/cli/cli-version.ts) lit out/package.json, que seul le packaging Electron complet y depose. Comportement amont, assert tel quel par le smoke.",
+      "worktree_list_without_runtime": "worktree list --json sans runtime repond en JSON {error: {code: 'runtime_unavailable'}} (exit 1) — contrat machine-readable verifie sans runtime."
+    },
+    "proved": ["orca-ide --help", "orca-ide --version", "orca-ide worktree list --json"],
+    "surface": [
+      "open",
+      "serve (operateur seul, jamais lance par V5)",
+      "status",
+      "diagnostics memory",
+      "agent-context",
+      "reference list|add|remove|find",
+      "search",
+      "account add|list|select|rm",
+      "skills installed|share|list|get|install|update",
+      "host list|rm",
+      "environment add|list|show|rm",
+      "plugin create|types|validate|inspect|release-entry|test|check|list|logs|install|update|uninstall|catalog|enable|disable|system|restart|open|shot|dev",
+      "vm recipe doctor",
+      "automations list|show|create|edit|remove|run|runs",
+      "project list|setups|setup-existing-folder|setup-clone|setup-create|setup-update|setup-delete",
+      "repo list|add|show|set|set-base-ref|search-refs",
+      "worktree list|show|activate|current|create|set|rm|ps",
+      "ports",
+      "agent launch",
+      "terminal send",
+      "worktree create --name <t> --no-parent --agent codex --prompt ... --json"
+    ]
+  },
+  "command": {
+    "linux": "orca-ide",
+    "note": "Sur Linux, orca nu = le lecteur d'ecran GNOME (/usr/bin/orca). Le contrat expose orca-ide, jamais orca nu."
+  },
+  "excluded": [
+    "orchestration task-create",
+    "orchestration task-dispatch",
+    "orchestration task-check",
+    "toute commande de mise a jour (update manuel, plugin update comme voie de mise a jour)",
+    "orca serve comme service V5 (serveur operateur-externe seulement)",
+    "orca open comme lancement V5",
+    "--bind 0.0.0.0",
+    "allowPublic",
+    "pairing mobile"
+  ],
+  "form": ["cli-contract", "orcad-client"],
+  "gel": "708aca6a46a09c3ad3503bd3abe0ae94b502e9a7",
+  "module": "orca",
+  "orcad_client": {
+    "bind": "127.0.0.1 par defaut",
+    "operations": ["readiness", "websocket round-trip", "stop", "idle-exit"],
+    "proof": "aspace-orca-adapter/protocol-proof/proof.mjs — stub local 127.0.0.1 port ephemere, jamais contre un orcad V5 ni onorca.dev",
+    "readiness": {
+      "fields": ["runtimeId", "boundEndpoint", "advertisedEndpoint", "pairing", "health"],
+      "source": "buildOrcadServeReadiness (src/main/orcad/orcad-serve-readiness.ts) + ServeReadiness (src/main/server/serve-readiness.ts)"
+    },
+    "websocket_endpoint": "boundEndpoint = rpc.getWebSocketEndpoint() (src/main/server/serve-pairing-readiness.ts) — ws:// loopback, port dynamique/pinne, pas de port fixe"
+  },
+  "skills_reference": {
+    "gel_skills": [
+      "orca-cli",
+      "orca-computer-use",
+      "orca-emulator",
+      "orca-emulator-android",
+      "orca-jira",
+      "orca-linear",
+      "orca-per-workspace-env",
+      "orca-plugin-authoring",
+      "orchestration",
+      "jira-tickets",
+      "linear-tickets"
+    ],
+    "mechanism": "version-matched : guide charge depuis l'executable (ORCA_CLI_COMMAND / orca-dev / orca-ide), orca skills list|get",
+    "note": "Les guides complets (289 lignes) ne sont pas embarques. Divergence V5 (6 skills, 12 fichiers) consignee dans la fiche, non alignee (D-F2-7)."
+  },
+  "telemetry": {
+    "auto_update_cut": "config autoDownload=false + autoInstallOnAppQuit=false ; chemin de lancement sans scheduleAutomaticUpdateCheck",
+    "forced": ["ORCA_TELEMETRY_DISABLED=1", "DO_NOT_TRACK=1"]
+  },
+  "version": "0.1.0"
+}
